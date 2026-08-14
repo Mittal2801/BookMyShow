@@ -3,6 +3,7 @@ import { Pagination, Autoplay } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
+import { useEffect, useState } from "react";
 
 const movies = [
   {
@@ -145,8 +146,29 @@ const movies = [
       "Two vloggers investigate a mysterious land filled with terrifying secrets.",
   },
 ];
+  
 
-export default function Stream() {
+const Stream = () => {
+  const languages = [
+    "English",
+    "Hindi",
+    "Gujarati",
+    "Tamil",
+    "Telugu",
+    "Malayalam",
+    "Kannada",
+    "Marathi",
+  ];
+
+  const [sections, setSections] = useState([]);
+
+    useEffect(() => {
+
+        fetch("http://127.0.0.1:8000/api/streams/")
+            .then(res => res.json())
+            .then(data => setSections(data));
+
+    }, []);
   return (
   <>
     <Swiper
@@ -242,7 +264,7 @@ export default function Stream() {
       ))}
     </Swiper>
 
-    <div className="bg-[#f5f5f5] py-14">
+    {/* <div className="bg-[#f5f5f5] py-14">
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -324,7 +346,98 @@ export default function Stream() {
 
       </div>
 
-    </div>
+    </div> */}
+      {/* <div className="px-30 pt-10 text-2xl font-bold">
+        <div>Premiere of the week</div>
+      </div> */}
+    {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 my-5 w-250 rounded-sm mx-30">
+            
+            {stream.map((setStream) => (
+
+              <div key={setStream.id} className="shadow ">
+
+                <img
+                  src={setStream.poster}
+                  alt={setStream.title}
+                  className="w-full h-80 object-cover rounded-sm"
+                />
+
+                <div className="px-2 py-2 bg-white">
+
+                  <h2 className="text-xl font-semibold">{movie.title}</h2>
+
+                  <p className="text-gray-500">
+                    {movie.genre.join(", ")}
+                  </p>
+
+                  <p className="text-gray-500">{movie.language  }</p>
+
+                </div>
+
+              </div>
+
+            ))}
+
+    </div> */}
+
+    <div className="max-w-7xl mx-auto px-4 py-10">
+
+            {sections.map(section => (
+
+                <div key={section.id} className="mb-14">
+
+                    <div className="flex justify-between items-center mb-5">
+
+                        <h2 className="text-3xl font-bold">
+
+                            {section.name}
+
+                        </h2>
+
+                        <button className="text-red-500">
+
+                            See All →
+
+                        </button>
+
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+
+                        {section.streams.map(movie => (
+
+                            <div key={movie.id}>
+
+                                <img
+                                    src={movie.poster}
+                                    alt={movie.title}
+                                    className="rounded-xl h-72 w-full object-cover"
+                                />
+
+                                <h3 className="mt-3 font-semibold">
+
+                                    {movie.title}
+
+                                </h3>
+
+                                <p className="text-gray-500">
+
+                                    {movie.language}
+
+                                </p>
+
+                            </div>
+
+                        ))}
+
+                    </div>
+
+                </div>
+
+            ))}
+
+        </div>
+    
 
 
     <div className="bg-black py-14">
@@ -449,3 +562,5 @@ export default function Stream() {
   </>
 );
 }
+
+export default Stream;

@@ -36,6 +36,16 @@ const Movies = () => {
     "Marathi",
   ];
 
+  const [movies,setMovies] = useState([]);
+
+  useEffect(()=>{
+    fetch("http://127.0.0.1:8000/api/movies/")
+    .then((res) => res.json())
+    .then((data) => setMovies(data));
+  }, []);
+
+
+
   return (
     <div className="bg-[#f2f5f9] min-h-screen">
 
@@ -172,7 +182,35 @@ const Movies = () => {
 
             </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 my-5 w-250 rounded-sm">
 
+            {movies.map((movie) => (
+
+              <div key={movie.id} className="shadow ">
+
+                <img
+                  src={movie.poster}
+                  alt={movie.title}
+                  className="w-full h-80 object-cover rounded-sm"
+                />
+
+                <div className="px-2 py-2 bg-white">
+
+                  <h2 className="text-xl font-semibold">{movie.title}</h2>
+
+                  <p className="text-gray-500">
+                    {movie.genre.join(", ")}
+                  </p>
+
+                  <p className="text-gray-500">{movie.language  }</p>
+
+                </div>
+
+              </div>
+
+            ))}
+
+            </div>
             
 
           </div>
