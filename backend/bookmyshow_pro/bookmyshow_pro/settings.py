@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-import dj_database_url
 import os
 
 
@@ -35,6 +34,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     ".onrender.com",
+    "*",
 ]
 
 
@@ -98,9 +98,10 @@ WSGI_APPLICATION = 'bookmyshow_pro.wsgi.application'
 # }
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL')
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
@@ -140,9 +141,14 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR / "static"),
+    BASE_DIR / 'static',
 ]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 CORS_ALLOW_ALL_ORIGINS = True
 

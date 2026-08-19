@@ -10,7 +10,6 @@ def home(request):
 
 urlpatterns = [
     path('', home),
-    path('admin/', admin.site.urls),
     path("addmovie/",views.add_movie),
     path("api/movies/",views.movie_api),
     path("addstream/",views.add_stream),
