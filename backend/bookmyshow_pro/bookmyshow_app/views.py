@@ -26,24 +26,29 @@ def add_movie(request):
     return render(request,"add_movie.html",{"genres": genres})
 
 def movie_api(request):
-    movies = Movie.objects.all()
-    data = []
-    
-    for movie in movies:
-        data.append({
-            "id":movie.id,
-            "title":movie.title,
-            "language":movie.language,
-            "genre": [g.name for g in movie.genre.all()],
-            "duration":movie.duration,
-            "certificate":movie.certificate,
-            "release_date":str(movie.release_date),
-            "interested":movie.interested,
-            "poster":movie.poster,
-        })  
-    return JsonResponse(data,safe=False)
 
- 
+    movies = Movie.objects.prefetch_related("genre").all()
+
+    data = []
+
+    for movie in movies:
+
+        data.append({
+            "id": movie.id,
+            "title": movie.title,
+            "language": movie.language,
+            "genre": [
+                g.name for g in movie.genre.all()
+            ],
+            "duration": movie.duration,
+            "certificate": movie.certificate,
+            "release_date": str(movie.release_date),
+            "interested": movie.interested,
+            "poster": movie.poster,
+        })
+
+    return JsonResponse(data, safe=False)
+
 def add_stream(request):
     streamtypes = StreamType.objects.all()
 
@@ -59,12 +64,12 @@ def add_stream(request):
             rent=request.POST["rent"],
             poster=request.POST["poster"],
 
-            streamtype=StreamType.objects.get(
+            stream_type=StreamType.objects.get(
                 id=request.POST["streamtype"]
             )
         )
 
-        return redirect("/addstream")
+        return redirect("/addstream/")
 
     return render(request, "add_stream.html", {
         "streamtypes": streamtypes
@@ -74,15 +79,15 @@ def stream_api(request):
 
     data = []
 
-    streamtypes = StreamType.objects.prefetch_related("streams")
+    streamtypes = StreamType.objects.prefetch_related("streams").all()
 
     for st in streamtypes:
 
-        movies = []
+        streams = []
 
         for movie in st.streams.all():
 
-            movies.append({
+            streams.append({
                 "id": movie.id,
                 "title": movie.title,
                 "duration": movie.duration,
@@ -91,18 +96,19 @@ def stream_api(request):
                 "interested": movie.interested,
                 "language": movie.language,
                 "rent": movie.rent,
-                "poster": movie.poster,
+                "poster": str(movie.poster) if movie.poster else "",
             })
 
         data.append({
             "id": st.id,
             "name": st.name,
-            "streams": movies,
+            "streams": streams,
         })
 
     return JsonResponse(data, safe=False)
 
 def add_event(request):
+
     eventtypes = EventType.objects.all()
     languages = Language.objects.all()
 
@@ -111,27 +117,34 @@ def add_event(request):
         lang_ids = request.POST.getlist("lang")
 
         event = Event.objects.create(
-            title = request.POST["title"],
-            image = request.POST["image"],
-            interested = request.POST["interested"],
-            date = request.POST["date"],
-            starttime = request.POST["starttime"],
-            duration = request.POST["duration"],
-            age = request.POST["age"],
-            price = request.POST["price"],
-            about = request.POST["about"],
-            location = request.POST["location"],
+            title=request.POST["title"],
+            image=request.POST["image"],
+            interested=request.POST["interested"],
+            date=request.POST["date"],
+            starttime=request.POST["starttime"],
+            duration=request.POST["duration"],
+            age=request.POST["age"],
+            price=request.POST["price"],
+            about=request.POST["about"],
+            location=request.POST["location"],
 
             event_type=EventType.objects.get(
                 id=request.POST["event_type"]
-            ),
+            )
         )
-        event.lang.set(lang_id)
-        
 
-    return redirect("/addevent")
+        event.lang.set(lang_ids)
 
+        return redirect("/addevent/")
 
+    return render(
+        request,
+        "add_event.html",
+        {
+            "eventtypes": eventtypes,
+            "languages": languages
+        }
+    )
 
 def event_api(request):
         events = Event.objects.prefetch_related(
