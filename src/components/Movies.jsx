@@ -39,7 +39,7 @@ const Movies = () => {
   const [movies,setMovies] = useState([]);
 
   useEffect(()=>{
-    fetch("http://127.0.0.1:8000/api/movies/")
+    fetch("https://bookmyshow-backend-2r9e.onrender.com/api/movies/")
     .then((res) => res.json())
     .then((data) => setMovies(data));
   }, []);

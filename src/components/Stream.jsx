@@ -164,7 +164,7 @@ const Stream = () => {
 
     useEffect(() => {
 
-        fetch("http://127.0.0.1:8000/api/streams/")
+        fetch("https://bookmyshow-backend-2r9e.onrender.com/api/streams/")
             .then(res => res.json())
             .then(data => setSections(data));
 
