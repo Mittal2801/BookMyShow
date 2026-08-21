@@ -163,12 +163,20 @@ const Stream = () => {
   const [sections, setSections] = useState([]);
 
     useEffect(() => {
-
-        fetch("https://bookmyshow-backend-2r9e.onrender.com/api/streams/")
-            .then(res => res.json())
-            .then(data => setSections(data));
-
-    }, []);
+    fetch("https://bookmyshow-backend-2-29e.onrender.com/api/streams/")
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error(`HTTP Error: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then((data) => {
+            setEvents(data);
+        })
+        .catch((error) => {
+            console.error("Error fetching events:", error);
+        });
+}, []);
   return (
   <>
     <Swiper

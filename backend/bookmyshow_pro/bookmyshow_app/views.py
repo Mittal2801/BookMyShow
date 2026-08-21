@@ -147,40 +147,36 @@ def add_event(request):
     )
 
 def event_api(request):
-        events = Event.objects.prefetch_related(
-            "lang"
-        ).select_related(
-            "event_type"
-        )
-        
-        data = []
 
-        for event in events:
-            data.append({
-                "id" :event.id,
-                "title" :event.title, 
-                "image" : event.image,
-                "interested" : event.interested, 
-                "date" : str(event.date), 
-                "starttime" : str(event.starttime),
-                "duration" : event.duration, 
-                "age" : event.age,
-                "price" : event.price, 
-                "about" : event.about,
-                "event_type": event.event_type.name if event.event_type else "",
+    events = Event.objects.prefetch_related(
+        "lang"
+    ).select_related(
+        "event_type"
+    ).all()
 
-                "languages": [
-                    language.lang
-                    for language in event.lang.all()
-                ], 
-                 
-            })
+    data = []
 
-        return JsonResponse(data, safe=False)
+    for event in events:
 
-        
+        data.append({
+            "id": event.id,
+            "title": event.title,
+            "image": event.image,
+            "interested": event.interested,
+            "date": str(event.date),
+            "starttime": str(event.starttime),
+            "duration": event.duration,
+            "age": event.age,
+            "price": event.price,
+            "about": event.about,
+            "location": event.location,
 
+            "event_type": event.event_type.name,
 
+            "languages": [
+                language.lang
+                for language in event.lang.all()
+            ],
+        })
 
-
-        
+    return JsonResponse(data, safe=False)
