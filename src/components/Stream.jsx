@@ -161,9 +161,10 @@ const Stream = () => {
   ];
 
   const [sections, setSections] = useState([]);
+  const API_URL = "https:///bookmyshow-backend-2r9e.onrender.com";
 
     useEffect(() => {
-    fetch("https://bookmyshow-backend-2-29e.onrender.com/api/streams/")
+    fetch(`${API_URL}/api/streams/`)
         .then((res) => {
             if (!res.ok) {
                 throw new Error(`HTTP Error: ${res.status}`);

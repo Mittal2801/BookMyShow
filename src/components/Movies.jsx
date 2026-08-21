@@ -37,9 +37,10 @@ const Movies = () => {
   ];
 
   const [movies,setMovies] = useState([]);
+  const API_URL = "https:///bookmyshow-backend-2r9e.onrender.com";
 
   useEffect(() => {
-    fetch("https://bookmyshow-backend-2-29e.onrender.com/api/movies/")
+    fetch(`${API_URL}/api/movies/`)
         .then((res) => {
             if (!res.ok) {
                 throw new Error(`HTTP Error: ${res.status}`);
