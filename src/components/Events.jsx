@@ -17,11 +17,12 @@ const Events = () => {
 
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const API_URL = "https:///bookmyshow-backend-2r9e.onrender.com";
+  
 
   useEffect(() => {
 
     // fetch("https://bookmyshow-backend-2r9e.onrender.com//api/events/")
+    const API_URL = "https:///bookmyshow-backend-2r9e.onrender.com";
     fetch(`${API_URL}/api/events/`)
 
       .then((res) => {

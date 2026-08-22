@@ -1,29 +1,35 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .models import Movie,Genre,Stream,StreamType,Event,EventType,Language
+from .models import Movie, Genre, Stream, StreamType, Event, EventType, Language
 
-
-# Create your views here.
 
 def add_movie(request):
-    
+
     genres = Genre.objects.all()
-    
+
     if request.method == "POST":
+
         movie = Movie.objects.create(
-            title = request.POST["title"],
-            language = request.POST["language"],
-            duration = request.POST["duration"],
-            certificate = request.POST["certificate"],
-            release_date = request.POST["release_date"],
-            interested = request.POST["interested"],
-            poster = request.POST["poster"],
+            title=request.POST["title"],
+            language=request.POST["language"],
+            duration=request.POST["duration"],
+            certificate=request.POST["certificate"],
+            release_date=request.POST["release_date"],
+            interested=request.POST["interested"],
+            poster=request.POST["poster"],
         )
-        
+
         genre_ids = request.POST.getlist("genre")
         movie.genre.set(genre_ids)
+
         return redirect("/addmovie/")
-    return render(request,"add_movie.html",{"genres": genres})
+
+    return render(
+        request,
+        "add_movie.html",
+        {"genres": genres}
+    )
+
 
 def movie_api(request):
 
@@ -49,12 +55,16 @@ def movie_api(request):
 
     return JsonResponse(data, safe=False)
 
+
+# ================= STREAM =================
+
 def add_stream(request):
+
     streamtypes = StreamType.objects.all()
 
     if request.method == "POST":
 
-        stream = Stream.objects.create(
+        Stream.objects.create(
             title=request.POST["title"],
             duration=request.POST["duration"],
             certificate=request.POST["certificate"],
@@ -71,41 +81,49 @@ def add_stream(request):
 
         return redirect("/addstream/")
 
-    return render(request, "add_stream.html", {
-        "streamtypes": streamtypes
-    })
+    return render(
+        request,
+        "add_stream.html",
+        {"streamtypes": streamtypes}
+    )
+
 
 def stream_api(request):
 
+    streamtypes = StreamType.objects.prefetch_related(
+        "streams"
+    ).all()
+
     data = []
 
-    streamtypes = StreamType.objects.prefetch_related("streams").all()
+    for streamtype in streamtypes:
 
-    for st in streamtypes:
+        streams_data = []
 
-        streams = []
+        for stream in streamtype.streams.all():
 
-        for movie in st.streams.all():
-
-            streams.append({
-                "id": movie.id,
-                "title": movie.title,
-                "duration": movie.duration,
-                "certificate": movie.certificate,
-                "release_date": str(movie.release_date),
-                "interested": movie.interested,
-                "language": movie.language,
-                "rent": movie.rent,
-                "poster": str(movie.poster) if movie.poster else "",
+            streams_data.append({
+                "id": stream.id,
+                "title": stream.title,
+                "duration": stream.duration,
+                "certificate": stream.certificate,
+                "release_date": str(stream.release_date),
+                "interested": stream.interested,
+                "language": stream.language,
+                "rent": stream.rent,
+                "poster": stream.poster,
             })
 
         data.append({
-            "id": st.id,
-            "name": st.name,
-            "streams": streams,
+            "id": streamtype.id,
+            "name": streamtype.name,
+            "streams": streams_data,
         })
 
     return JsonResponse(data, safe=False)
+
+
+# ================= EVENT =================
 
 def add_event(request):
 
@@ -146,6 +164,7 @@ def add_event(request):
         }
     )
 
+
 def event_api(request):
 
     events = Event.objects.prefetch_related(
@@ -170,9 +189,7 @@ def event_api(request):
             "price": event.price,
             "about": event.about,
             "location": event.location,
-
             "event_type": event.event_type.name,
-
             "languages": [
                 language.lang
                 for language in event.lang.all()
