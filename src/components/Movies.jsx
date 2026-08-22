@@ -220,13 +220,31 @@ const Movies = () => {
               </div>
 
             ))} */}
-            {
-              movies.map((p)=>{
-                return(
-                  <div>{p.title}</div>
-                )
-              })
-            }
+            {movies.map((movie) => (
+          <div key={movie.id} className="shadow">
+
+            <img
+              src={movie.poster}
+              alt={movie.title}
+              className="w-full h-80 object-cover rounded-sm"
+            />
+
+            <div className="px-2 py-2 bg-white">
+              <h2 className="text-xl font-semibold">
+                {movie.title}
+              </h2>
+
+              <p className="text-gray-500">
+                {movie.genre.join(", ")}
+              </p>
+
+              <p className="text-gray-500">
+                {movie.language}
+              </p>
+            </div>
+
+          </div>
+        ))}
             </div>
             
 
