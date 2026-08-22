@@ -195,7 +195,7 @@ const Movies = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 my-5 w-250 rounded-sm">
 
-            {movies.map((movie) => (
+            {/* {movies.map((movie) => (
 
               <div key={movie.id} className="shadow ">
 
@@ -213,14 +213,20 @@ const Movies = () => {
                     {movie.genre.join(", ")}
                   </p>
 
-                  <p className="text-gray-500">{movie.language  }</p>
+                  <p className="text-gray-500">{movie.language}</p>
 
                 </div>
 
               </div>
 
-            ))}
-
+            ))} */}
+            {
+              movies.map((p)=>{
+                return(
+                  <div>{p.name}</div>
+                )
+              })
+            }
             </div>
             
 
