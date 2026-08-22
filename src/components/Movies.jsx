@@ -223,7 +223,7 @@ const Movies = () => {
             {
               movies.map((p)=>{
                 return(
-                  <div>{p.name}</div>
+                  <div>{p.title}</div>
                 )
               })
             }
